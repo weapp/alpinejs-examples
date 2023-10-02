@@ -20,6 +20,6 @@ const {resource} = Astro.props
 "
     data-id={resource.id}
 >
-    <img class="aspect-[1/1] w-20" src={`https://randomuser.me/api/portraits/men/${resource.id}.jpg`} />
+    <img class="aspect-[1/1] w-20" src={resource.picture} />
     <span class="text-white [text-shadow:_0_1px_1px_#807870] [font-variant:_small-caps]">{resource.id}. {resource.name}</span>
 </div>
