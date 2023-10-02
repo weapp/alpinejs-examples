@@ -1,0 +1,121 @@
+---
+import users from '../data/users.json'
+import UsersLayout from '../layouts/UsersLayout.astro'
+import UserListItem from '../components/UserListItem.astro';
+import MiniUserListItem from '../components/MiniUserListItem.astro';
+
+const pokes = await Promise.all([
+    // await users.find(u => u.id == 25),
+    users.find(u => u.id == 7),
+    users.find(u => u.id == 5),
+    users.find(u => u.id == 1),
+    users.find(u => u.id == 4),
+    users.find(u => u.id == 2),
+    users.find(u => u.id == 3)
+])
+
+---
+<UsersLayout title="Pokedex">
+    <section x-data="{ order: $persist([1, 2, 3, 4, 5, 7]).using(urlStorageArray('--')).as('order') }">
+        <span class="p-1 m-1" x-text="order"></span>
+
+        <div class="flex gap-2 py-5 select-none" x-data="sortable" x-model="order">
+            {pokes.map(resource => <MiniUserListItem resource={resource}/>)}
+        </div>
+
+        <div class="flex">
+            <div class="flex flex-col gap-2 w-[30rem] select-none" x-data="sortable({})" x-model="order">
+                {pokes.map(resource => <UserListItem resource={resource}/>)}
+            </div>
+
+            <form class="flex flex-col gap-2 pl-3">
+                <ul class="flex flex-col gap-1">
+                    <template x-for="id in order">
+                        <input name="id[]" x-model="id"></input>
+                    </template>
+                </ul>
+                <input type="submit" class="px-4 py-2 font-semibold text-white bg-indigo-600 rounded select-none disabled:bg-stone-500 hover:bg-indigo-500 disabled:hover:bg-stone-500 disabled:text-stone-100 active:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-300">
+            </form>
+        </div>
+    </section>
+</UsersLayout>
+
+<script>
+    // import Sortable from 'sortablejs';
+    import Sortable from 'https://esm.sh/sortablejs@1.15.0'
+    window.Sortable = Sortable
+
+    import Alpine from 'https://esm.sh/alpinejs@3.13.0'
+    // import autosize from 'https://esm.sh/@marcreichel/alpine-autosize@1.3.2'
+    // import clipboard from 'https://esm.sh/@ryangjchandler/alpine-clipboard@2.2.0'
+    // import collapse from 'https://esm.sh/@alpinejs/collapse@3.11.1'
+    import persist from 'https://esm.sh/@alpinejs/persist@3.11.1'
+    // import morph from 'https://esm.sh/@alpinejs/morph@3.13.0'
+
+    window.Alpine = Alpine
+    // Alpine.plugin(autosize)
+    // Alpine.plugin(clipboard)
+    // Alpine.plugin(collapse)
+    Alpine.plugin(persist)
+    // Alpine.plugin(morph)
+
+    Alpine.data(
+        'sortable',
+        ({
+            handle = '.handle',
+            filter = '[data-no-draggable]',
+            animation = 250
+        }= {}) => ({
+            '__order': [],
+            '__sortable': null,
+            init() {
+                const _this = this;
+
+                this.__sortable ||= Sortable.create(this.$el, {
+			        filter,
+                    animation,
+			        handle,
+                    // Event when you move an item in the list or between lists
+                    onMove: function (evt, _originalEvent) {
+                        if(evt.related.dataset.noDraggable !== void(0)) { return false }
+                    },
+                    onEnd: function (evt) {
+                        const itemEl = evt.item
+                        const list = Array.from(itemEl.parentElement.querySelectorAll(':scope>:not([data-no-draggable])')).map((el) => {
+                                return el.dataset.id
+                            });
+                            _this.__order = list;
+                        }
+                });
+                Alpine.bind(this.$el, {
+                    'x-modelable': "__order",
+                    'x-effect' () { _this.__sortable.sort(_this.__order); }
+                })
+            }
+        })
+    )
+
+    window.urlStorage = {
+        getItem(key) {
+            return new URLSearchParams(window.location.search).get(key)
+        },
+        setItem(key, value) {
+			const url = new URL(window.location);
+			url.searchParams.set(key, value);
+			history.pushState({}, "", url);
+        }
+    }
+
+    window.urlStorageArray = (separator = "--")=>({
+        getItem(key) {
+            const val = window.urlStorage.getItem(key)
+            return val && JSON.stringify(val.split(separator))
+        },
+        setItem(key, value) {
+            window.urlStorage.setItem(key, (JSON.parse(value) || []).join(separator))
+        }
+    })
+
+    Alpine.start()
+
+</script>

@@ -1,0 +1,17 @@
+---
+const {resource} = Astro.props
+---
+<div class="
+    rounded-lg
+    border
+    border-[#FFFFFF70]
+    drop-shadow
+    overflow-hidden
+    handle
+    cursor-move
+    w-10
+"
+    data-id={resource.id}
+>
+    <img class="aspect-[1/1]" src={`https://randomuser.me/api/portraits/men/${resource.id}.jpg`} />
+</div>
