@@ -1,0 +1,33 @@
+---
+const {name, children, id} = Astro.props
+
+const folder = () => `
+    <svg xmlns="http://www.w3.org/2000/svg" class="text-amber-400 icon icon-tabler icon-tabler-folder-open" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M5 19l2.757 -7.351a1 1 0 0 1 .936 -.649h12.307a1 1 0 0 1 .986 1.164l-.996 5.211a2 2 0 0 1 -1.964 1.625h-14.026a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v2"></path>
+    </svg>
+`
+
+const file = () => `
+    <svg xmlns="http://www.w3.org/2000/svg" class="text-indigo-400 icon icon-tabler icon-tabler-file" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+    </svg>
+`
+---
+
+<div class="w-full border bg-stone-100" data-id={id}  x-data={JSON.stringify({"order": [], "id": id || null})}>
+    <div class="flex p-1 m-1 rounded-sm cursor-move select-none gap-1 hover:bg-stone-200 bg-stone-100 handle"><Fragment set:html={folder()} />{name}</div>
+    <div
+        class="pl-7"
+        x-data="sortable({group: 'folder'})"
+        x-model="order"
+        x-effect="void([id, order, 'subscribe to id and order']); if ($el._f_) { console.log(id, order) } else { $el._f_ = 'true' }"
+    >
+        {(children || []).map((child => child.type == "folder"
+            ?  (<Astro.self {...child}/>)
+            : (<div data-id={child.id} class="flex p-1 m-1 rounded-sm cursor-move select-none gap-1 hover:bg-stone-200 bg-stone-100 handle"><Fragment set:html={file()} />{child.name}</div>))
+        )}
+    </div>
+</div>

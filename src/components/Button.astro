@@ -1,8 +1,4 @@
 ---
 
 ---
-<button 
-	{...Astro.props} 
-	class="px-4 py-2 font-semibold text-white bg-indigo-600 rounded select-none disabled:bg-stone-500 hover:bg-indigo-500 disabled:hover:bg-stone-500 disabled:text-stone-100 active:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-300">
-	<slot/>
-</button>
+<button {...Astro.props} class="btn"><slot/></button>

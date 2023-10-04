@@ -1,0 +1,232 @@
+{
+    "survey": {
+        "id": "clmc1ktnc05aekz0h8mj1q8td",
+        "createdAt": "$D2023-09-09T13:08:22.680Z",
+        "updatedAt": "$D2023-10-03T21:58:05.356Z",
+        "name": "New Survey",
+        "type": "link",
+        "environmentId": "clmc1idvk0bslql0hf0yf2k52",
+        "status": "inProgress",
+        "attributeFilters": [],
+        "displayOption": "displayOnce",
+        "autoClose": null,
+        "triggers": [],
+        "redirectUrl": null,
+        "recontactDays": null,
+        "questions": [
+            {
+                "id": "QUESTION_ID_h0kxsgcybgrfkmkoiwmo97py",
+                "type": "openText",
+                "headline": "Custom Survey",
+                "subheader": "This is an example survey.",
+                "required": false,
+                "buttonLabel": "buttonlabel",
+                "backButtonLabel": "bacckkk",
+                "logic": [],
+                "placeholder": "Type your answer here...",
+                "longAnswer": false
+            },
+            {
+                "id": "QUESTION_ID_2_o5nhpzv7mmsqhrgwqr8erkjt",
+                "type": "multipleChoiceSingle",
+                "headline": "What do you do?",
+                "subheader": "Can't do both.",
+                "required": false,
+                "buttonLabel": "nxt",
+                "backButtonLabel": "bacckkk",
+                "logic": [],
+                "choices": [
+                    {
+                        "id": "zoqs1epdtqmlg4k8r73s2sms",
+                        "label": "Eat the cake 🍰"
+                    },
+                    {
+                        "id": "k5d4t3o4jzlm1dw0fasnpctp",
+                        "label": "Have the cake 🎂"
+                    },
+                    {
+                        "id": "other",
+                        "label": "None of all"
+                    }
+                ],
+                "shuffleOption": "exceptLast"
+            },
+            {
+                "id": "zn0l3zcr15j9057losouxznx",
+                "type": "multipleChoiceMulti",
+                "headline": "What's important on vacay?",
+                "subheader": "deesc",
+                "required": false,
+                "buttonLabel": "next button text ⏭️",
+                "backButtonLabel": "bacckkk",
+                "logic": [
+                    {
+                        "condition": "includesAll",
+                        "value": [
+                            "multi Sun ☀️"
+                        ],
+                        "destination": "on0upwteojnnrylbq78e1cyp"
+                    },
+                    {
+                        "condition": "includesOne",
+                        "value": [
+                            "multi Palms 🌴"
+                        ],
+                        "destination": "phb5v5cekdkauz703zvuyvov"
+                    },
+                    {
+                        "condition": "equals",
+                        "value": "multi Ocean 🌊",
+                        "destination": "end"
+                    }
+                ],
+                "choices": [
+                    {
+                        "id": "yndjtu2815ot3eh243dbka2o",
+                        "label": "multi Sun ☀️"
+                    },
+                    {
+                        "id": "zm1rw6itdp85n6zlcnqpsuah",
+                        "label": "multi Ocean 🌊"
+                    },
+                    {
+                        "id": "qng59auqqxcjuch5d1880ctn",
+                        "label": "multi Palms 🌴"
+                    }
+                ],
+                "shuffleOption": "all"
+            },
+            {
+                "id": "dgm4fjlll7vxsw5b5rbmk7wx",
+                "type": "nps",
+                "headline": "How likely are you to recommend Aviato to a friend or colleague?",
+                "subheader": "dsc",
+                "required": false,
+                "buttonLabel": "nxt",
+                "backButtonLabel": "bacckkk",
+                "lowerLabel": "Not at all likely",
+                "upperLabel": "Extremely likely"
+            },
+            {
+                "id": "phb5v5cekdkauz703zvuyvov",
+                "type": "rating",
+                "headline": "How would you rate Aviato",
+                "subheader": "Don't worry, be honest.",
+                "required": false,
+                "buttonLabel": "neext",
+                "backButtonLabel": "bacckkk",
+                "scale": "number",
+                "range": 5,
+                "logic": [
+                    {
+                        "condition": "lessThan",
+                        "value": "3",
+                        "destination": "QUESTION_ID_h0kxsgcybgrfkmkoiwmo97py"
+                    },
+                    {
+                        "condition": "submitted",
+                        "destination": "on0upwteojnnrylbq78e1cyp"
+                    }
+                ],
+                "lowerLabel": "Not good",
+                "upperLabel": "Very good"
+            },
+            {
+                "id": "on0upwteojnnrylbq78e1cyp",
+                "type": "cta",
+                "headline": "You are one of our power users!",
+                "required": false,
+                "buttonLabel": "Book interview",
+                "backButtonLabel": "bacckkk",
+                "html": "<p class=\"fb-editor-paragraph\" dir=\"ltr\"><span style=\"white-space: pre-wrap;\">We would love to talk to you and learn more about how you use our product.</span></p>",
+                "buttonUrl": "https://google.com",
+                "buttonExternal": true,
+                "dismissButtonLabel": "Skippo"
+            },
+            {
+                "id": "mpz5q38yrxmcnsdpwy37hgp9",
+                "type": "consent",
+                "headline": "Terms and Conditions ",
+                "required": false,
+                "buttonLabel": "nxxtt",
+                "backButtonLabel": "bacckkk",
+                "html": "<p class=\"fb-editor-paragraph\" dir=\"ltr\"><span style=\"white-space: pre-wrap;\">We would love to talk to you and learn more about how you use our product.</span></p>",
+                "label": "I agree to the terms and conditions",
+                "dismissButtonLabel": "Skip"
+            },
+            {
+                "id": "k93uzhr6vrh1gq8xyrujwo2s",
+                "type": "multipleChoiceSingle",
+                "headline": "What do you do?",
+                "subheader": "yo neeed to chose",
+                "required": false,
+                "buttonLabel": "sacaboo!",
+                "backButtonLabel": "bacckkk",
+                "logic": [],
+                "choices": [
+                    {
+                        "id": "pzurlxjswp8q67t6478c0ggc",
+                        "label": "Eat the cake 🍰"
+                    },
+                    {
+                        "id": "d0mi2c62n3lg8i45lg7euhho",
+                        "label": "sit on cake 🎂"
+                    }
+                ],
+                "shuffleOption": "none"
+            }
+        ],
+        "thankYouCard": {
+            "enabled": true,
+            "headline": "Thank you!",
+            "subheader": "We appreciate your feedback."
+        },
+        "delay": 0,
+        "autoComplete": null,
+        "closeOnDate": null,
+        "surveyClosedMessage": null,
+        "singleUse": {
+            "enabled": false,
+            "isEncrypted": true
+        },
+        "verifyEmail": null
+    },
+    "product": {
+        "id": "clmc1idvk0bskql0hvcj7pc3i",
+        "createdAt": "$D2023-09-09T13:06:28.928Z",
+        "updatedAt": "$D2023-09-09T13:07:40.893Z",
+        "name": "Aviato",
+        "teamId": "clmc1idvk0bsjql0h0wn2izvo",
+        "brandColor": "#09cf05",
+        "highlightBorderColor": null,
+        "recontactDays": 7,
+        "formbricksSignature": true,
+        "placement": "bottomRight",
+        "clickOutsideClose": true,
+        "darkOverlay": false,
+        "environments": [
+            {
+                "id": "clmc1idvk0bslql0hf0yf2k52",
+                "createdAt": "$D2023-09-09T13:06:28.928Z",
+                "updatedAt": "$D2023-09-09T13:06:28.928Z",
+                "type": "production",
+                "productId": "clmc1idvk0bskql0hvcj7pc3i",
+                "widgetSetupCompleted": false
+            },
+            {
+                "id": "clmc1idvk0bsrql0hc1lmjo9g",
+                "createdAt": "$D2023-09-09T13:06:28.928Z",
+                "updatedAt": "$D2023-09-09T13:06:28.928Z",
+                "type": "development",
+                "productId": "clmc1idvk0bskql0hvcj7pc3i",
+                "widgetSetupCompleted": false
+            }
+        ]
+    },
+    "personId": "$undefined",
+    "emailVerificationStatus": "$undefined",
+    "prefillAnswer": null,
+    "singleUseId": "$undefined",
+    "singleUseResponse": "$undefined",
+    "webAppUrl": "https://app.formbricks.com"
+}

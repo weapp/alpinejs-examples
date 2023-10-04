@@ -3,39 +3,127 @@ import users from '../data/users.json'
 import UsersLayout from '../layouts/UsersLayout.astro'
 import UserListItem from '../components/UserListItem.astro';
 import MiniUserListItem from '../components/MiniUserListItem.astro';
+import Folder from '../components/Folder.astro';
+import type { Code } from 'astro:components';
 
-const pokes = await Promise.all([
+const resources = await Promise.all([
     // await users.find(u => u.id == 25),
     users.find(u => u.id == 7),
     users.find(u => u.id == 5),
     users.find(u => u.id == 1),
     users.find(u => u.id == 4),
     users.find(u => u.id == 2),
-    users.find(u => u.id == 3)
+    users.find(u => u.id == 3),
+    users.find(u => u.id == 6),
+    users.find(u => u.id == 8),
+    users.find(u => u.id == 9),
+    users.find(u => u.id == 10),
 ])
+
+const structure = {
+    "name": "root",
+    "type": "folder",
+    "children": [
+        {
+            "id": "d-c-shape-box",
+            "name": "c-shape-box",
+            "type": "folder",
+            "children": [
+                { "id": "a-index.html", "name": "index.html", "type": "file" },
+                { "id": "a-script.js", "name": "script.js", "type": "file" },
+                { "id": "a-style.css", "name": "style.css", "type": "file" }
+            ]
+        },
+        {
+            "id": "d-credit-card",
+            "name": "credit-card",
+            "type": "folder",
+            "children": [
+                {
+                    "id": "d-images",
+                    "name": "images",
+                    "type": "folder",
+                    "children": [
+                        { "id": "b-chip.png", "name": "chip.png", "type": "file" },
+                        { "id": "b-map.png", "name": "map.png", "type": "file" },
+                        { "id": "b-pattern.png", "name": "pattern.png", "type": "file" },
+                        { "id": "b-visa.png", "name": "visa.png", "type": "file" }
+                    ]
+                },
+                { "id": "c-index.html", "name": "index.html", "type": "file" },
+                { "id": "c-style.css", "name": "style.css", "type": "file" }
+            ]
+        },
+        { "id": "d-index.html", "name": "index.html", "type": "file" },
+        { "id": "d-main.py", "name": "main.py", "type": "file" },
+        { "id": "d-Readme.md", "name": "Readme.md", "type": "file" },
+        { "id": "d-sidebar.png", "name": "sidebar.png", "type": "file" }
+    ]
+}
 
 ---
 <UsersLayout title="Users">
-    <section x-data="{ order: $persist([1, 2, 3, 4, 5, 7]).using(urlStorageArray('--')).as('order') }">
-        <span class="p-1 m-1" x-text="order"></span>
-
-        <div class="flex gap-2 py-5 select-none" x-data="sortable" x-model="order">
-            {pokes.map(resource => <MiniUserListItem resource={resource}/>)}
-        </div>
-
-        <div class="flex">
-            <div class="flex flex-col gap-2 w-[30rem] select-none" x-data="sortable({})" x-model="order">
-                {pokes.map(resource => <UserListItem resource={resource}/>)}
+    <section class="flex flex-col gap-5">
+        <div x-data="{ order: $persist([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).using(urlStorageArray('--')).as('order') }">
+            <span class="p-1 m-1" x-text="order"></span>
+            <div class="font-semibold">Render by server:</div>
+            <div class="flex select-none gap-2" x-data="sortable" x-model="order">
+                {resources.map(resource => <MiniUserListItem resource={resource}/>)}
             </div>
 
-            <form class="flex flex-col gap-2 pl-3">
-                <ul class="flex flex-col gap-1">
-                    <template x-for="id in order">
-                        <input name="id[]" x-model="id"></input>
-                    </template>
-                </ul>
-                <input type="submit" class="px-4 py-2 font-semibold text-white bg-indigo-600 rounded select-none disabled:bg-stone-500 hover:bg-indigo-500 disabled:hover:bg-stone-500 disabled:text-stone-100 active:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-300">
-            </form>
+            <div class="font-semibold">Render by Alpine:</div>
+            <div class="flex select-none gap-2" x-data="sortable" x-model="order">
+                <!-- {pokes.map(resource => <MiniUserListItem resource={resource}/>)} -->
+                <template x-for="user in order" :key="user">
+                    <div class="
+                        rounded-lg
+                        border
+                        border-[#FFFFFF70]
+                        drop-shadow
+                        overflow-hidden
+                        handle
+                        cursor-move
+                        w-10
+                    "
+                        :data-id="user"
+                    >
+                        <img class="aspect-[1/1]" :src="
+                            str = '' + user;
+                            str = str.charAt(str.length-1);
+                            return `https://randomuser.me/api/portraits/lego/${str}.jpg`
+                        " />
+                    </div>
+                </template>
+            </div>
+        </div>
+
+
+        <div x-data="{ order1: $persist([]).using(urlStorageArray('--')), order2: $persist([]).using(urlStorageArray('--')) }">
+            <div class="flex">
+                <div class="flex flex-col gap-2 w-[20rem] select-none" x-data="sortable({group: 'big'})" x-model="order1">
+                    {resources.slice(0, 5).map(resource => <UserListItem resource={resource}/>)}
+                </div>
+                <div class="flex flex-col gap-2 w-[20rem] select-none" x-data="sortable({group: 'big'})" x-model="order2">
+                    {resources.slice(5, 10).map(resource => <UserListItem resource={resource}/>)}
+                </div>
+
+                <form class="flex flex-col pl-3 gap-2">
+                    <span class="" x-text="order1"></span>
+                    <span class="" x-text="order2"></span>
+                    <ul class="flex flex-col gap-1">
+                        <template x-for="id in order2">
+                            <input name="id[]" x-model="id"></input>
+                        </template>
+                    </ul>
+                    <input type="submit" class="px-4 py-2 font-semibold text-white bg-indigo-600 rounded select-none disabled:bg-stone-500 hover:bg-indigo-500 disabled:hover:bg-stone-500 disabled:text-stone-100 active:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-300">
+                </form>
+            </div>
+        </div>
+
+
+
+        <div class="flex">
+            <Folder {...structure} />
         </div>
     </section>
 </UsersLayout>
@@ -62,9 +150,21 @@ const pokes = await Promise.all([
     Alpine.data(
         'sortable',
         ({
+            group = void(0),
             handle = '.handle',
             filter = '[data-no-draggable]',
-            animation = 250
+            animation = 250,
+            sort = true,
+            swapThreshold = 1,
+            invertSwap = true,
+            multiDrag = false, // Enable multi-drag
+            ghostClass = "sortable-ghost",  // Class name for the drop placeholder
+            chosenClass = "sortable-chosen",  // Class name for the chosen item
+            dragClass = "sortable-drag",  // Class name for the dragging item
+            selectedClass = 'selected', // The class applied to the selected items
+            fallbackTolerance = 3, // So that we can select items on mobile
+            swap = false, // Enable swap plugin
+            swapClass = 'highlight', // The class applied to the hovered swap item
         }= {}) => ({
             '__order': [],
             '__sortable': null,
@@ -72,24 +172,46 @@ const pokes = await Promise.all([
                 const _this = this;
 
                 this.__sortable ||= Sortable.create(this.$el, {
+			        group,
 			        filter,
                     animation,
 			        handle,
+                    sort,
+                    swapThreshold,
+                    invertSwap,
+                    multiDrag,
+                    selectedClass,
+                    fallbackTolerance,
+                    swap,
+                    swapClass,
+                    ghostClass,
+                    chosenClass,
+                    dragClass,
                     // Event when you move an item in the list or between lists
                     onMove: function (evt, _originalEvent) {
                         if(evt.related.dataset.noDraggable !== void(0)) { return false }
                     },
                     onEnd: function (evt) {
-                        const itemEl = evt.item
-                        const list = Array.from(itemEl.parentElement.querySelectorAll(':scope>:not([data-no-draggable])')).map((el) => {
+                        const itemEl = _this.$el
+                        const list = Array.from(itemEl.querySelectorAll(':scope>[data-id]:not([data-no-draggable])')).map((el) => {
                                 return el.dataset.id
                             });
                             _this.__order = list;
-                        }
+                    },
+                    onAdd: function (evt) {
+                        const itemEl = _this.$el
+                        const list = Array.from(itemEl.querySelectorAll(':scope>[data-id]:not([data-no-draggable])')).map((el) => {
+                                return el.dataset.id
+                            });
+                            _this.__order = list;
+                    },
                 });
                 Alpine.bind(this.$el, {
                     'x-modelable': "__order",
-                    'x-effect' () { _this.__sortable.sort(_this.__order); }
+                    'x-effect' () {
+                        _this.__sortable.sort(_this.__order);
+                        _this.$nextTick(()=> _this.__sortable.sort(_this.__order)) // fix problems with alpine x-for templates
+                    }
                 })
             }
         })
@@ -109,7 +231,7 @@ const pokes = await Promise.all([
     window.urlStorageArray = (separator = "--")=>({
         getItem(key) {
             const val = window.urlStorage.getItem(key)
-            return val && JSON.stringify(val.split(separator))
+            return val ? JSON.stringify(val.split(separator)) : null
         },
         setItem(key, value) {
             window.urlStorage.setItem(key, (JSON.parse(value) || []).join(separator))

@@ -1,0 +1,10 @@
+---
+const {options, value, ...props} = Astro.props
+---
+<select
+	class="select"
+	{...props}
+>
+	<option hidden>Please Select One</option>
+	{options.map(option => (<option selected={(''+option)==(''+value)}>{option}</option>))}
+</select>

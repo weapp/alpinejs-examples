@@ -1,0 +1,7 @@
+---
+// const {options, selected} = Astro.props
+---
+<textarea
+    class="textarea"
+{...Astro.props} set:html={Astro.slots.render('default')}>
+</textarea>
