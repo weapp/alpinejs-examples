@@ -7,6 +7,7 @@ import Container from '../layouts/Container.astro';
 import Layout from '../layouts/Layout.astro';
 import Textarea from '../components/Textarea.astro';
 import Button from '../components/Button.astro';
+import Switch from '../components/Switch.astro';
 
 const questions = survey.questions
 ---
@@ -15,13 +16,19 @@ const questions = survey.questions
 <Layout title="Form Builder - Alpinejs Examples">
     <div class="flex flex-col items-center w-full">
         <Container x-data={JSON.stringify({questions: questions})}>
-            <div class="flex flex-row">
+            <div class="flex flex-row gap-3">
                 <div class="flex flex-col">
                     <template x-for="question in questions" :key="question.id">
-                        <div class="p-3 w-full max-w-[50rem] bg-white bg-opacity-50 shadow mx-2 mb-8" :data-id="question.id">
+                        <div class="p-3 w-full max-w-[50rem] bg-white bg-opacity-50 shadow mb-8" :data-id="question.id">
                             <div class="flex gap-2">
                                 <h3 class="w-full text-xl font-bold" x-text="question.headline"></h3>
-                                <div><Select x-model="question.type" options={['openText', 'multipleChoiceSingle', 'multipleChoiceMulti', 'nps', 'rating', 'cta', 'consent']} /></div>
+                                <select class="select py-2 w-[15rem]" x-init="$nextTick(()=>{tmp = question.type; question.type = null; question.type = tmp})" x-model="question.type" x-data="{options: {'openText': 'Free text', 'multipleChoiceSingle': 'Single-select', 'multipleChoiceMulti': 'Multi-select', 'nps': 'Net Promoter Score (NPS)', 'rating': 'Rating', 'cta': 'Call-to-action', 'consent': 'Consent'}}" >
+                                    <option hidden>Please Select One</option>
+                                    <template x-for="option in Object.entries(options)">
+                                        <option :value="option[0]" x-text="option[1]"></option>
+                                    </template>
+                                </select>
+
                                 <Button @click="questions = questions.filter((obj) => obj.id !== question.id)">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -58,33 +65,93 @@ const questions = survey.questions
                                 </ul>
                                 <Button @click="question.choices.push({id: crypto.randomUUID(), label: ''})">+ Add Option</Button>
                             </div>
-                            <div x-show="['multipleChoiceSingle', 'multipleChoiceMulti'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">shuffleOption: </label> <Select x-model="question.shuffleOption" options={['', 'exceptLast', 'all', 'none']} /></div>
-                            <div x-show="['rating'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">scale: </label> <Select x-model="question.scale" options={['', 'star', 'smiley', 'number']} /></div>
-                            <div x-show="['rating'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">range: </label> <Select x-model="question.range"  options={[5, 3, 4, 7, 10]} /></div>
+                            <div x-show="['multipleChoiceSingle', 'multipleChoiceMulti'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1">
+                                <label class="font-semibold">shuffleOption: </label>
+                                <select class="py-3 select" x-init="$nextTick(()=>{tmp = question.shuffleOption; question.shuffleOption = null; question.shuffleOption = tmp})" x-model="question.shuffleOption" x-data="{options: {'exceptLast': 'exceptLast', 'all': 'all', 'none': 'none'}}" >
+                                    <option hidden>Please Select One</option>
+                                    <template x-for="option in Object.entries(options)">
+                                        <option :value="option[0]" x-text="option[1]"></option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div x-show="['rating'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1">
+                                <label class="font-semibold">scale: </label> 
+
+                                <select class="py-3 select" x-init="$nextTick(()=>{tmp = question.scale; question.scale = null; question.scale = tmp})" x-model="question.scale" x-data="{options: {'star': 'star', 'smiley': 'smiley', 'number': 'number',}}" >
+                                    <option hidden>Please Select One</option>
+                                    <template x-for="option in Object.entries(options)">
+                                        <option :value="option[0]" x-text="option[1]"></option>
+                                    </template>
+                                </select>
+
+                            </div>
+                            <div x-show="['rating'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1">
+                                <label class="font-semibold">range: </label> 
+
+                                <select class="py-3 select" x-init="$nextTick(()=>{tmp = question.range; question.range = null; question.range = tmp})" x-model="question.range" x-data="{options: {5: 5, 3: 3, 4: 4, 7: 7, 10: 10,}}" >
+                                    <option hidden>Please Select One</option>
+                                    <template x-for="option in Object.entries(options)">
+                                        <option :value="option[0]" x-text="option[1]"></option>
+                                    </template>
+                                </select>
+
+                            </div>
                             <div x-show="['nps', 'rating'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">lowerLabel: </label> <Input x-model="question.lowerLabel"  /></div>
                             <div x-show="['nps', 'rating'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">upperLabel: </label> <Input x-model="question.upperLabel"  /></div>
                             <div x-show="['cta', 'consent'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">html: </label> <Textarea x-model="question.html" class="w-[30rem] h-[20rem]"></Textarea></div>
-                            <div x-show="['cta'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">buttonExternal: </label> <Select x-model="question.buttonExternal" options={['true', 'false']} /></div>
+                            <div x-show="['cta'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">buttonExternal: </label> <Switch x-model="question.buttonExternal" /></div>
                             <div x-show="['openText', 'multipleChoiceSingle', 'multipleChoiceMulti', 'nps', 'cta', 'consent', 'rating'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">Button Label: </label> <Input x-model="question.buttonLabel"  /></div>
                             <div x-show="['cta'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">buttonUrl: </label> <Input x-model="question.buttonUrl"  /></div>
                             <div x-show="['consent'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">label: </label> <Input x-model="question.label" /></div>
                             <div x-show="['consent'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">dismissButtonLabel: </label> <Input x-model="question.dismissButtonLabel" /></div>
 
                             <!-- Advanced -->
-                            <div x-show="false" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">backButtonLabel: </label> <Input x-model="question.backButtonLabel"  /></div>
-                            <div x-show="false" class="mt-3" x-transition.duration.250ms.opacity class="py-1">
+                            <div class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">backButtonLabel: </label> <Input x-model="question.backButtonLabel"  /></div>
+                            <div class="mt-3" x-transition.duration.250ms.opacity class="py-1">
                                 <label class="font-semibold">Logic Jumps: </label>
                                 <ul class="flex flex-col gap-1 mb-1">
                                     <template x-for="(rule, idx) in question.logic">
                                         <li class="flex items-center gap-1">
                                             <div class="w-[20rem]">If this answer</div>
-                                            <Select
-                                            x-model="rule.condition"
-                                            options={['includesAll', 'includesOne', 'equals', 'submitted', 'lessThan']}
-                                            />
-                                            <Input x-model="rule.value" />
+
+                                            <select 
+                                                class="py-3 select"
+                                                x-init="$nextTick(()=>{tmp = rule.condition; rule.condition = null; rule.condition = tmp})" 
+                                                x-model="rule.condition"
+                                                x-data="{options: {'includesAll': 'includesAll', 'includesOne': 'includesOne', 'equals': 'equals', 'submitted': 'submitted', 'lessThan': 'lessThan',}}" 
+                                            >
+                                                <option hidden>Please Select One</option>
+                                                <template x-for="option in Object.entries(options)">
+                                                    <option :value="option[0]" x-text="option[1]"></option>
+                                                </template>
+                                            </select>
+
+                                            <!-- <Input x-model="rule.value" /> -->
+                                            <select x-show="question.choices.length" class="py-3 select" 
+                                                x-init="$nextTick(()=>{tmp = rule.value; rule.value = null; rule.value = tmp})" 
+                                                x-model="rule.value" 
+                                                x-data="{options: []" 
+                                                x-effect="options = question.choices.map((q) => ({k: q.label, v: q.label}))"
+                                            >
+                                                <option hidden>Please Select One</option>
+                                                <template x-for="{k, v} in options">
+                                                    <option :value="k" x-text="v"></option>
+                                                </template>
+                                            </select>
+
                                             <div class="w-[20rem]">jump to</div>
-                                            <Input x-model="rule.destination" />
+                                            <select class="py-3 select" 
+                                                x-init="$nextTick(()=>{tmp = rule.destination; rule.destination = null; rule.destination = tmp})" 
+                                                x-model="rule.destination" 
+                                                x-data="{options: []" 
+                                                x-effect="options = questions.map((q) => ({k: q.id, v: q.headline}))"
+                                            >
+                                                <option hidden>Please Select One</option>
+                                                <template x-for="{k, v} in options">
+                                                    <option :value="k" x-text="v"></option>
+                                                </template>
+                                            </select>
+
                                             <button @click="question.logic.splice(idx, 1)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -102,19 +169,19 @@ const questions = survey.questions
                             </div>
 
                             <!-- Bottom -->
-                            <div x-show="['openText'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">longAnswer: </label> <Select x-model="question.longAnswer" options={['true', 'false']} /></div>
-                            <div class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">required: </label> <Select x-model="question.required" options={['true', 'false']} /></div>
-
-
-
+                            <div x-show="['openText'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">longAnswer: </label> <Switch x-model="question.longAnswer" /></div>
+                            <div class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1">
+                                <label class="font-semibold">required: </label> 
+                                <Switch  x-model="question.required" />
+                            </div>
 
 
                         </div>
                     </template>
-                    <Button @click="questions.push({id: crypto.randomUUID(), choices: [], logic: []})">+ Add Question</Button>
+                    <Button @click="questions.push({id: crypto.randomUUID(), choices: [], logic: [], required: false, buttonExternal: false, longAnswer: true})">+ Add Question</Button>
                 </div>
                 <div>
-                    <pre class="w-[35rem] break-words whitespace-pre-wrap" x-text="JSON.stringify(questions, null, 2)">
+                    <pre class="max-w-[35rem] break-words whitespace-pre-wrap" x-text="JSON.stringify(questions, null, 2)">
                     </pre>
                 </div>
 

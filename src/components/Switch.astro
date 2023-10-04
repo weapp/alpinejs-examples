@@ -1,0 +1,19 @@
+---
+const {...props} = Astro.props
+---
+<button
+    type="button" 
+    role="switch" 
+    tabindex="0" 
+    :aria-checked="checked" 
+    :class="{ 'bg-indigo-700': checked, 'bg-stone-500': ! checked }" 
+    class="switch"
+    @click="checked = ! checked"
+    x-data="{checked: false}"
+    x-modelable="checked"
+    {...props}
+>
+    <span class="sr-only">Some label for screen readers only</span>
+
+    <span aria-hidden="true" :class="{ 'translate-x-7': checked }" class="switch-button"></span>
+</button>
