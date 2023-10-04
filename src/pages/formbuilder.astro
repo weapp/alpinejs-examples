@@ -71,8 +71,8 @@ const questions = survey.questions
                             <div x-show="['consent'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">dismissButtonLabel: </label> <Input x-model="question.dismissButtonLabel" /></div>
 
                             <!-- Advanced -->
-                            <div class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">backButtonLabel: </label> <Input x-model="question.backButtonLabel"  /></div>
-                            <div class="mt-3" x-transition.duration.250ms.opacity class="py-1">
+                            <div x-show="false" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">backButtonLabel: </label> <Input x-model="question.backButtonLabel"  /></div>
+                            <div x-show="false" class="mt-3" x-transition.duration.250ms.opacity class="py-1">
                                 <label class="font-semibold">Logic Jumps: </label>
                                 <ul class="flex flex-col gap-1 mb-1">
                                     <template x-for="(rule, idx) in question.logic">
