@@ -43,7 +43,8 @@
                   "label": "Definitely, because they can turn any mundane task into an adventure, and who wouldn't pay 50 euros for a little excitement?"
                 }
               ],
-              "required": "true"
+              "required": "true",
+              "buttonLabel": "Next"
             },
             {
               "id": "7444e7bb-5e90-47fe-859c-1531429824b3",
@@ -55,7 +56,8 @@
               "range": "5",
               "lowerLabel": "Awesome",
               "upperLabel": "It would be an epic comedy!",
-              "required": "true"
+              "required": "true",
+              "buttonLabel": "Finish"
             }
           ],
         "thankYouCard": {
