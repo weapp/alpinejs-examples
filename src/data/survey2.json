@@ -1,0 +1,114 @@
+{
+    "survey": {
+        "id": "clmc1ktnc05aekz0h8mj1q8td",
+        "createdAt": "$D2023-09-09T13:08:22.680Z",
+        "updatedAt": "$D2023-10-03T21:58:05.356Z",
+        "name": "New Survey",
+        "type": "link",
+        "environmentId": "clmc1idvk0bslql0hf0yf2k52",
+        "status": "inProgress",
+        "attributeFilters": [],
+        "displayOption": "displayOnce",
+        "autoClose": null,
+        "triggers": [],
+        "redirectUrl": null,
+        "recontactDays": null,
+        "questions": [
+            {
+              "id": "02d91849-b822-4a96-b137-4f3b7a9b025c",
+              "headline": "Why should the \"Guilles\" team win 50 euros?",
+              "type": "openText",
+              "placeholder": "Type your answer here...",
+              "buttonLabel": "Next",
+              "longAnswer": "true",
+              "required": "true",
+              "choices": [],
+              "logic": []
+            },
+            {
+              "id": "7281daf6-a9ac-4521-9285-c7fcfaf26b54",
+              "type": "multipleChoiceMulti",
+              "headline": "Do you think \"Guilles\"  team deserves to win 50 euros?",
+              "choices": [
+                {
+                  "id": "4f5b197b-b903-4c7e-b7a4-26dcfa071570",
+                  "label": " Of course, they are the joy of the competition!"
+                },
+                {
+                  "id": "a0e23f11-233d-4393-8041-89853cef9172",
+                  "label": " Definitely, 50 euros have never been better spent!"
+                },
+                {
+                  "id": "40ef5cb3-1560-4610-91b4-66f4c408db5a",
+                  "label": "Definitely, because they can turn any mundane task into an adventure, and who wouldn't pay 50 euros for a little excitement?"
+                }
+              ],
+              "required": "true"
+            },
+            {
+              "id": "7444e7bb-5e90-47fe-859c-1531429824b3",
+              "choices": [],
+              "logic": [],
+              "headline": "On a scale of 1 to 10, how funny do you think it would be to see Guilles Team win 50 euros?",
+              "type": "rating",
+              "scale": "star",
+              "range": "5",
+              "lowerLabel": "Awesome",
+              "upperLabel": "It would be an epic comedy!",
+              "required": "true"
+            }
+          ],
+        "thankYouCard": {
+            "enabled": true,
+            "headline": "Thank you!",
+            "subheader": "We appreciate your feedback."
+        },
+        "delay": 0,
+        "autoComplete": null,
+        "closeOnDate": null,
+        "surveyClosedMessage": null,
+        "singleUse": {
+            "enabled": false,
+            "isEncrypted": true
+        },
+        "verifyEmail": null
+    },
+    "product": {
+        "id": "clmc1idvk0bskql0hvcj7pc3i",
+        "createdAt": "$D2023-09-09T13:06:28.928Z",
+        "updatedAt": "$D2023-09-09T13:07:40.893Z",
+        "name": "Aviato",
+        "teamId": "clmc1idvk0bsjql0h0wn2izvo",
+        "brandColor": "#09cf05",
+        "highlightBorderColor": null,
+        "recontactDays": 7,
+        "formbricksSignature": true,
+        "placement": "bottomRight",
+        "clickOutsideClose": true,
+        "darkOverlay": false,
+        "environments": [
+            {
+                "id": "clmc1idvk0bslql0hf0yf2k52",
+                "createdAt": "$D2023-09-09T13:06:28.928Z",
+                "updatedAt": "$D2023-09-09T13:06:28.928Z",
+                "type": "production",
+                "productId": "clmc1idvk0bskql0hvcj7pc3i",
+                "widgetSetupCompleted": false
+            },
+            {
+                "id": "clmc1idvk0bsrql0hc1lmjo9g",
+                "createdAt": "$D2023-09-09T13:06:28.928Z",
+                "updatedAt": "$D2023-09-09T13:06:28.928Z",
+                "type": "development",
+                "productId": "clmc1idvk0bskql0hvcj7pc3i",
+                "widgetSetupCompleted": false
+            }
+        ]
+    },
+    "personId": "$undefined",
+    "emailVerificationStatus": "$undefined",
+    "prefillAnswer": null,
+    "singleUseId": "$undefined",
+    "singleUseResponse": "$undefined",
+    "webAppUrl": "https://app.formbricks.com"
+}

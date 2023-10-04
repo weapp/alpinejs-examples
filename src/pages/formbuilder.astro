@@ -2,7 +2,7 @@
 import Select from '../components/Select.astro';
 import Input from '../components/Input.astro';
 // import questions from '../data/questions.json'
-import {survey} from '../data/survey.json'
+import {survey} from '../data/survey2.json'
 import Container from '../layouts/Container.astro';
 import Layout from '../layouts/Layout.astro';
 import Textarea from '../components/Textarea.astro';
@@ -36,11 +36,11 @@ const questions = survey.questions
 
                             <!-- Config -->
                             <div class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">Question: </label> <Input x-model="question.headline"  /></div>
-                            <div x-show="['openText', 'multipleChoiceMulti', 'multipleChoiceSingle', 'nps', 'rating '].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">Description: </label> <Input x-model="question.subheader"  /></div>
+                            <div x-show="true || ['openText', 'multipleChoiceMulti', 'multipleChoiceSingle', 'nps', 'rating '].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">Description: </label> <Input x-model="question.subheader"  /></div>
                             <div x-show="['openText'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">Placeholder: </label> <Input x-model="question.placeholder"  /></div>
                             <div x-show="['multipleChoiceSingle', 'multipleChoiceMulti'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">Options: </label>
                                 <ul class="flex flex-col gap-1 mb-1">
-                                    <template x-for="choice in (question.choices || [])" :key="choice.id">
+                                    <template x-for="choice in (question.choices ||= [])" :key="choice.id">
                                         <li class="flex items-center gap-1">
                                             <Input x-model="choice.label" />
                                             <button @click="question.choices = question.choices.filter((obj) => obj.id !== choice.id)">
@@ -111,7 +111,7 @@ const questions = survey.questions
 
                         </div>
                     </template>
-                    <Button @click="questions.push({id: crypto.randomUUID()})">+ Add Question</Button>
+                    <Button @click="questions.push({id: crypto.randomUUID(), choices: [], logic: []})">+ Add Question</Button>
                 </div>
                 <div>
                     <pre class="w-[35rem] break-words whitespace-pre-wrap" x-text="JSON.stringify(questions, null, 2)">
