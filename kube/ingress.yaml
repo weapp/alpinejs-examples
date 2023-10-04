@@ -1,0 +1,28 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: hackathon
+  name: hackathon
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    name: hackathon
+    service: hackathon
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - ${hostname}
+      secretName: hackathon-nginx-tls
+  rules:
+    - host: ${hostname}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hackathon
+                port:
+                  number: 80
