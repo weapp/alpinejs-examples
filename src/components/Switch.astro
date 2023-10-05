@@ -1,5 +1,5 @@
 ---
-const {...props} = Astro.props
+const {class: cls, ...props} = Astro.props
 ---
 <button
     type="button" 
@@ -7,7 +7,7 @@ const {...props} = Astro.props
     tabindex="0" 
     :aria-checked="checked" 
     :class="{ 'bg-indigo-700': checked, 'bg-stone-500': ! checked }" 
-    class="switch"
+    class={`${cls} switch`}
     @click="checked = ! checked"
     x-data="{checked: false}"
     x-modelable="checked"
