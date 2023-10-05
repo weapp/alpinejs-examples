@@ -1,4 +1,4 @@
 ---
-
+const {class: cls, ...props} = Astro.props
 ---
-<button {...Astro.props} class="btn"><slot/></button>
+<button {...props} class={`${cls} btn`}><slot/></button>

@@ -48,7 +48,8 @@
               "longAnswer": true,
               "buttonExternal": false,
               "buttonLabel": "Next",
-              "logic": []
+              "logic": [],
+              "backButtonLabel": "back"
             },
             {
               "id": "7444e7bb-5e90-47fe-859c-1531429824b3",

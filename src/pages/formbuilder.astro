@@ -2,34 +2,33 @@
 import Select from '../components/Select.astro';
 import Input from '../components/Input.astro';
 // import questions from '../data/questions.json'
+// import {survey} from '../data/survey.json'
 import {survey} from '../data/survey2.json'
 import Container from '../layouts/Container.astro';
 import Layout from '../layouts/Layout.astro';
 import Textarea from '../components/Textarea.astro';
 import Button from '../components/Button.astro';
 import Switch from '../components/Switch.astro';
-
-const questions = survey.questions
 ---
-
+<!-- p-3 w-full max-w-[50rem] bg-white bg-opacity-50 shadow mb-8 -->
 
 <Layout title="Form Builder - Alpinejs Examples">
     <div class="flex flex-col items-center w-full">
-        <Container x-data={JSON.stringify({questions: questions})}>
+        <Container x-data="survey">
             <div class="flex flex-row gap-3">
-                <div class="flex flex-col">
+                <div class="flex flex-col flex-1 50%">
                     <template x-for="question in questions" :key="question.id">
-                        <div class="p-3 w-full max-w-[50rem] bg-white bg-opacity-50 shadow mb-8" :data-id="question.id">
-                            <div class="flex gap-2">
-                                <h3 class="w-full text-xl font-bold" x-text="question.headline"></h3>
-                                <select class="select py-2 w-[15rem]" x-init="$nextTick(()=>{tmp = question.type; question.type = null; question.type = tmp})" x-model="question.type" x-data="{options: {'openText': 'Free text', 'multipleChoiceSingle': 'Single-select', 'multipleChoiceMulti': 'Multi-select', 'nps': 'Net Promoter Score (NPS)', 'rating': 'Rating', 'cta': 'Call-to-action', 'consent': 'Consent'}}" >
-                                    <option hidden>Please Select One</option>
+                        <details class="p-5 mb-4 shadow card" :data-id="question.id" :open="question.id == open" :class="{'bg-white shadow-lg': open == question.id}">
+                            <summary class="flex items-center h-12 gap-2">
+                                <h3 @click.prevent="toggle(question)" class="w-full text-lg font-semibold" x-text="question.headline"></h3>
+                                <select class="select py-2 w-[15rem] h-12" x-data="selectorData(question, 'question', 'type', selectors_types())" >
+                                    <option hidden>Select One</option>
                                     <template x-for="option in Object.entries(options)">
                                         <option :value="option[0]" x-text="option[1]"></option>
                                     </template>
                                 </select>
 
-                                <Button @click="questions = questions.filter((obj) => obj.id !== question.id)">
+                                <Button class="h-12 " @click="removeQuestion(question.id)">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                         <path d="M4 7l16 0"></path>
@@ -39,18 +38,18 @@ const questions = survey.questions
                                         <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
                                     </svg>
                                 </Button>
-                            </div>
+                            </summary>
 
                             <!-- Config -->
                             <div class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">Question: </label> <Input x-model="question.headline"  /></div>
                             <div x-show="true || ['openText', 'multipleChoiceMulti', 'multipleChoiceSingle', 'nps', 'rating '].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">Description: </label> <Input x-model="question.subheader"  /></div>
                             <div x-show="['openText'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">Placeholder: </label> <Input x-model="question.placeholder"  /></div>
                             <div x-show="['multipleChoiceSingle', 'multipleChoiceMulti'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">Options: </label>
-                                <ul class="flex flex-col gap-1 mb-1">
-                                    <template x-for="choice in (question.choices ||= [])" :key="choice.id">
+                                <ul class="flex flex-col gap-2 mb-2">
+                                    <template x-for="choice in question.choices" :key="choice.id">
                                         <li class="flex items-center gap-1">
                                             <Input x-model="choice.label" />
-                                            <button @click="question.choices = question.choices.filter((obj) => obj.id !== choice.id)">
+                                            <button @click="removeChoice(question, choice.id)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                                     <path d="M4 7l16 0"></path>
@@ -63,12 +62,12 @@ const questions = survey.questions
                                         </li>
                                     </template>
                                 </ul>
-                                <Button @click="question.choices.push({id: crypto.randomUUID(), label: ''})">+ Add Option</Button>
+                                <Button @click="addChoice(question)">+ Add Option</Button>
                             </div>
                             <div x-show="['multipleChoiceSingle', 'multipleChoiceMulti'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1">
                                 <label class="font-semibold">shuffleOption: </label>
-                                <select class="py-3 select" x-init="$nextTick(()=>{tmp = question.shuffleOption; question.shuffleOption = null; question.shuffleOption = tmp})" x-model="question.shuffleOption" x-data="{options: {'exceptLast': 'exceptLast', 'all': 'all', 'none': 'none'}}" >
-                                    <option hidden>Please Select One</option>
+                                <select class="py-3 select" x-data="selectorData(question, 'question', 'shuffleOption', selectors_shuffleOptions())" >
+                                    <option hidden>Select One</option>
                                     <template x-for="option in Object.entries(options)">
                                         <option :value="option[0]" x-text="option[1]"></option>
                                     </template>
@@ -77,8 +76,8 @@ const questions = survey.questions
                             <div x-show="['rating'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1">
                                 <label class="font-semibold">scale: </label> 
 
-                                <select class="py-3 select" x-init="$nextTick(()=>{tmp = question.scale; question.scale = null; question.scale = tmp})" x-model="question.scale" x-data="{options: {'star': 'star', 'smiley': 'smiley', 'number': 'number',}}" >
-                                    <option hidden>Please Select One</option>
+                                <select class="py-3 select" x-data="selectorData(question, 'question', 'scale', selectors_scales())">
+                                    <option hidden>Select One</option>
                                     <template x-for="option in Object.entries(options)">
                                         <option :value="option[0]" x-text="option[1]"></option>
                                     </template>
@@ -88,8 +87,8 @@ const questions = survey.questions
                             <div x-show="['rating'].includes(question.type)" class="flex items-center gap-2 mt-3" x-transition.duration.250ms.opacity class="py-1">
                                 <label class="font-semibold">range: </label> 
 
-                                <select class="py-3 select" x-init="$nextTick(()=>{tmp = question.range; question.range = null; question.range = tmp})" x-model="question.range" x-data="{options: {5: 5, 3: 3, 4: 4, 7: 7, 10: 10,}}" >
-                                    <option hidden>Please Select One</option>
+                                <select class="py-3 select"  x-data="selectorData(question, 'question', 'range', selectors_ranges())">
+                                    <option hidden>Select One</option>
                                     <template x-for="option in Object.entries(options)">
                                         <option :value="option[0]" x-text="option[1]"></option>
                                     </template>
@@ -106,53 +105,37 @@ const questions = survey.questions
                             <div x-show="['consent'].includes(question.type)" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">dismissButtonLabel: </label> <Input x-model="question.dismissButtonLabel" /></div>
 
                             <!-- Advanced -->
-                            <div class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">backButtonLabel: </label> <Input x-model="question.backButtonLabel"  /></div>
-                            <div class="mt-3" x-transition.duration.250ms.opacity class="py-1">
+                            <div x-show="false" class="mt-3" x-transition.duration.250ms.opacity class="py-1"><label class="font-semibold">backButtonLabel: </label> <Input x-model="question.backButtonLabel"  /></div>
+                            <div x-show="false" class="mt-3" x-transition.duration.250ms.opacity class="py-1">
                                 <label class="font-semibold">Logic Jumps: </label>
-                                <ul class="flex flex-col gap-1 mb-1">
+                                <ul class="flex flex-col gap-2 mb-2">
                                     <template x-for="(rule, idx) in question.logic">
-                                        <li class="flex items-center gap-1">
-                                            <div class="w-[20rem]">If this answer</div>
+                                        <li class="flex items-center justify-between w-full gap-1">
+                                            <div class="">If this answer</div>
 
-                                            <select 
-                                                class="py-3 select"
-                                                x-init="$nextTick(()=>{tmp = rule.condition; rule.condition = null; rule.condition = tmp})" 
-                                                x-model="rule.condition"
-                                                x-data="{options: {'includesAll': 'includesAll', 'includesOne': 'includesOne', 'equals': 'equals', 'submitted': 'submitted', 'lessThan': 'lessThan',}}" 
-                                            >
-                                                <option hidden>Please Select One</option>
+                                            <select class="py-3 select" x-data="selectorData(rule, 'rule', 'condition', selectors_ruleConditions(question, rule))">
+                                                <option hidden>Select One</option>
                                                 <template x-for="option in Object.entries(options)">
                                                     <option :value="option[0]" x-text="option[1]"></option>
                                                 </template>
                                             </select>
 
-                                            <!-- <Input x-model="rule.value" /> -->
-                                            <select x-show="question.choices.length" class="py-3 select" 
-                                                x-init="$nextTick(()=>{tmp = rule.value; rule.value = null; rule.value = tmp})" 
-                                                x-model="rule.value" 
-                                                x-data="{options: []" 
-                                                x-effect="options = question.choices.map((q) => ({k: q.label, v: q.label}))"
-                                            >
-                                                <option hidden>Please Select One</option>
+                                            <select class="py-3 select" x-show="options.length > 0" x-data="selectorData(rule, 'rule', 'value', selectors_ruleValues(question, rule))">
+                                                <option hidden>Select One</option>
                                                 <template x-for="{k, v} in options">
                                                     <option :value="k" x-text="v"></option>
                                                 </template>
                                             </select>
 
-                                            <div class="w-[20rem]">jump to</div>
-                                            <select class="py-3 select" 
-                                                x-init="$nextTick(()=>{tmp = rule.destination; rule.destination = null; rule.destination = tmp})" 
-                                                x-model="rule.destination" 
-                                                x-data="{options: []" 
-                                                x-effect="options = questions.map((q) => ({k: q.id, v: q.headline}))"
-                                            >
-                                                <option hidden>Please Select One</option>
+                                            <div class="">jump to</div>
+                                            <select class="py-3 select max-w-[10rem]" x-data="selectorData(rule, 'rule', 'destination', selectors_ruleDestinations(question, rule))">
+                                                <option hidden>Select One</option>
                                                 <template x-for="{k, v} in options">
                                                     <option :value="k" x-text="v"></option>
                                                 </template>
                                             </select>
 
-                                            <button @click="question.logic.splice(idx, 1)">
+                                            <button @click="removeLogic(question, idx)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                                     <path d="M4 7l16 0"></path>
@@ -165,7 +148,7 @@ const questions = survey.questions
                                         </li>
                                     </template>
                                 </ul>
-                                <Button @click="(question.logic ||= []).push({})">+ Add Jump</Button>
+                                <Button @click="addLogic(question)">+ Add Jump</Button>
                             </div>
 
                             <!-- Bottom -->
@@ -176,12 +159,145 @@ const questions = survey.questions
                             </div>
 
 
-                        </div>
+                        </details>
                     </template>
-                    <Button @click="questions.push({id: crypto.randomUUID(), choices: [], logic: [], required: false, buttonExternal: false, longAnswer: true})">+ Add Question</Button>
+                    <Button @click="addQuestion()">+ Add Question</Button>
                 </div>
-                <div>
-                    <pre class="max-w-[35rem] break-words whitespace-pre-wrap" x-text="JSON.stringify(questions, null, 2)">
+                <div class="flex flex-col flex-1 50%">
+                    <template x-for="question in questions">
+                        <details class="p-5 mb-4 shadow card" :open="question.id == open" :class="{'bg-white shadow-lg': open == question.id}">
+                            <summary class="flex items-center justify-between w-full h-12" >
+                                <h3 @click.prevent="toggle(question)" class="w-full text-lg font-semibold" x-text="question.headline"></h3>
+                                <span class="text-stone-300" x-show="!question.required">Optional</span>
+                            </summary>
+
+                            <div class="w-full" x-show="question.type == 'openText'">
+                                <p class="w-full text-stone-500" x-text="question.subheader"></p>
+                                <textarea x-show="question.longAnswer" :placeholder="question.placeholder" class="mt-2 bg-white textarea"></textarea>
+                                <input x-show="!question.longAnswer" :placeholder="question.placeholder" class="mt-2 bg-white input"/>
+                                <div class="flex justify-between w-full mt-2">
+                                    <button  x-show="false" class="px-4 py-2 font-semibold rounded shadow" x-show="question.backButtonLabel" x-text="question.backButtonLabel"></button>
+                                    <div></div>
+                                    <Button x-show="question.buttonLabel" x-text="question.buttonLabel"></Button>
+                                </div>
+                            </div>
+
+                            <div class="w-full" x-show="question.type == 'cta'">
+                                <p class="w-full text-stone-500" x-text="question.subheader"></p>
+                                <p class="w-full text-stone-500" x-html="question.html"></p>
+
+                                <div class="flex justify-between w-full mt-2">
+                                    <button  x-show="false" class="px-4 py-2 font-semibold rounded shadow" x-show="question.backButtonLabel" x-text="question.backButtonLabel"></button>
+                                    <div></div>
+                                    <Button x-show="question.buttonLabel" x-text="question.buttonLabel"></Button>
+                                </div>
+                            </div>
+
+                            <div class="w-full" x-show="question.type == 'consent'">
+                                <p class="w-full text-stone-500" x-text="question.subheader"></p>
+                                <p class="w-full text-stone-500" x-html="question.html"></p>
+                                <label class="block w-full p-2 my-2 border rounded-md bg-stone-50"><input type="checkbox" :name="question.id"> <span x-text="question.label"></span></label>
+
+                                <div class="flex justify-between w-full mt-2">
+                                    <button  x-show="false" class="px-4 py-2 font-semibold rounded shadow" x-show="question.backButtonLabel" x-text="question.backButtonLabel"></button>
+                                    <div></div>
+                                    <div class="flex gap-2">
+                                        <button class="px-4 py-2 font-semibold rounded shadow" x-show="question.dismissButtonLabel && !question.required" x-text="question.dismissButtonLabel"></button>
+                                        <Button x-show="question.buttonLabel" x-text="question.buttonLabel"></Button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="w-full" x-show="question.type == 'multipleChoiceSingle'">
+                                <p class="w-full text-stone-500" x-text="question.subheader"></p>
+                                <ul class="w-full">
+                                    <template x-for="choice in question.choices">
+                                        <li><label class="block w-full p-2 my-2 border rounded-md"><input type="radio" :name="question.id"> <span x-text="choice.label"></span></label></li>
+                                    </template>
+                                </ul>
+                                <div class="flex justify-between w-full mt-2">
+                                    <button  x-show="false" class="px-4 py-2 font-semibold rounded shadow" x-show="question.backButtonLabel" x-text="question.backButtonLabel"></button>
+                                    <div></div>
+                                    <Button x-show="question.buttonLabel" x-text="question.buttonLabel"></Button>
+                                </div>
+                            </div>
+
+                            <div class="w-full" x-show="question.type == 'multipleChoiceMulti'">
+                                <p class="w-full text-stone-500" x-text="question.subheader"></p>
+                                <ul class="w-full">
+                                    <template x-for="choice in question.choices">
+                                        <li><label class="block w-full p-2 my-2 border rounded-md"><input type="checkbox" :name="question.id"> <span x-text="choice.label"></span></label></li>
+                                    </template>
+                                </ul>
+                                <div class="flex justify-between w-full mt-2">
+                                    <button  x-show="false" class="px-4 py-2 font-semibold rounded shadow" x-show="question.backButtonLabel" x-text="question.backButtonLabel"></button>
+                                    <div></div>
+                                    <Button x-show="question.buttonLabel" x-text="question.buttonLabel"></Button>
+                                </div>
+                            </div>
+
+                            <div class="w-full" x-show="question.type == 'rating'">
+                                <p class="w-full text-stone-500" x-text="question.subheader"></p>
+
+
+                                <div class="w-full px-10">
+                                    <ul class="flex w-full mt-2 rounded-lg justify-normal" :class="{border: question.scale == 'number'}">
+                                        <template x-for="i in range_to(question.range)">
+                                            <li class="flex-1 text-center" :class="{'border py-1': question.scale == 'number'}">
+                                                <div x-show="question.scale == 'star'" class="w-6 mx-auto">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                                                    </svg>
+                                                </div>
+                                                <div x-show="question.scale == 'number'" x-text="i">
+                                                </div>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                    <div class="flex justify-between w-full mt-2">
+                                        <div class="font-sm text-stone-500" x-text="question.lowerLabel"></div>
+                                        <div></div>
+                                        <div class="font-sm text-stone-500" x-text="question.upperLabel"></div>
+                                    </div>
+                                </div>
+
+
+                                <div class="flex justify-between w-full mt-2">
+                                    <button  x-show="false" class="px-4 py-2 font-semibold rounded shadow" x-show="question.backButtonLabel" x-text="question.backButtonLabel"></button>
+                                    <div></div>
+                                    <Button x-show="question.buttonLabel" x-text="question.buttonLabel"></Button>
+                                </div>
+                            </div>
+
+                            <div class="w-full" x-show="question.type == 'nps'">
+                                <p class="w-full text-stone-500" x-text="question.subheader"></p>
+
+                                <div class="w-full px-10">
+                                    <ul class="flex w-full mt-2 rounded-lg justify-normal" :class="{border: true}">
+                                        <template x-for="(_, i) in Array(10)">
+                                            <li class="flex-1 text-center" :class="{'border py-1': true}">
+                                                <div x-text="i + 1">
+                                                </div>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                    <div class="flex justify-between w-full mt-2">
+                                        <div class="font-sm text-stone-500" x-text="question.lowerLabel"></div>
+                                        <div></div>
+                                        <div class="font-sm text-stone-500" x-text="question.upperLabel"></div>
+                                    </div>
+                                </div>
+
+
+                                <div class="flex justify-between w-full mt-2">
+                                    <button  x-show="false" class="px-4 py-2 font-semibold rounded shadow" x-show="question.backButtonLabel" x-text="question.backButtonLabel"></button>
+                                    <div></div>
+                                    <Button x-show="question.buttonLabel" x-text="question.buttonLabel"></Button>
+                                </div>
+                            </div>
+                        </details>
+                    </template>
+                    <pre class="max-w-[35rem] break-words whitespace-pre-wrap" x-text="JSON.stringify(questions, null, 2)"> 
                     </pre>
                 </div>
 
@@ -189,7 +305,7 @@ const questions = survey.questions
     </div>
 </Layout>
 
-<script>
+<script type="module" define:vars={{survey}}>
     import Alpine from 'https://esm.sh/alpinejs@3.13.0'
 
     // import plugins from '/plugins.js?url'
@@ -202,6 +318,113 @@ const questions = survey.questions
     // window.toggleDarkMode = () => {
     //     Alpine.store('darkMode').toggle()
     // }
+
+    const defaultQuestion = () => (
+        {
+            headline: "New Question",
+            id: crypto.randomUUID(),
+            choices: [],
+            logic: [],
+            required: false,
+            buttonExternal: false,
+            longAnswer: true,
+            type: 'openText',
+            scale: 'star',
+            range: 5,
+            lowerLabel: 'Not good',
+            upperLabel: 'Very good',
+            buttonLabel: 'Next'
+        }
+    )
+
+    survey.questions = survey.questions.map((q) => ({...defaultQuestion(), ...q}))
+
+    Alpine.data('survey', ()=>({
+        open: null,
+        toggle(question) {
+            this.open = (this.open == question.id) ? null : question.id
+        },
+        survey: survey,
+        questions: [],
+        selectors_types() {
+            return {
+                'openText': 'Free text',
+                'multipleChoiceSingle': 'Single-select',
+                'multipleChoiceMulti': 'Multi-select',
+                'nps': 'Net Promoter Score (NPS)',
+                'rating': 'Rating',
+                'cta': 'Call-to-action',
+                'consent': 'Consent'
+            }
+        },
+        selectors_shuffleOptions() {
+            return {'exceptLast': 'exceptLast', 'all': 'all', 'none': 'none'};
+        },
+        selectors_scales() {
+            return {'star': 'Star', 'smiley': 'Smiley', 'number': 'Number',};
+        },
+        selectors_ranges() {
+            return {5: 5, 3: 3, 4: 4, 7: 7, 10: 10,}
+        },
+        selectors_ruleConditions(question, rule) {
+            return {
+                'includesAll': 'includesAll',
+                'includesOne': 'includesOne',
+                'equals': 'equals',
+                'submitted': 'submitted',
+                'lessThan': 'lessThan'
+            }
+        },
+        selectors_ruleValues(question, rule) {
+            if (['multipleChoiceSingle', 'multipleChoiceMulti'].includes(question.type)) {
+                return (question.choices || []).map((q) => ({'k': q.label, 'v': q.label}))
+            } else if (['rating', 'nps'].includes(question.type)) {
+                return this.range_to(question.range).map((i) => ({k: i, v: i}))
+            } else {
+                return []
+            }
+        },
+        range_to(n) {
+            return [...Array(parseInt(n) || 105).keys()].map((i) => (i + 1))
+        },
+        selectors_ruleDestinations(question, rule) {
+            return this.questions.filter((q) => (q.id != question.id)).map((q) => ({'k': q.id, 'v': q.headline}))
+        },
+        init() {
+            this.questions = this.survey.questions
+        },
+        addQuestion() {
+            const question = defaultQuestion()
+            this.questions.push(question)
+            this.open = question.id
+        },
+        removeQuestion(id) {
+            this.questions = this.questions.filter((obj) => obj.id !== id)
+        },
+        addChoice(question) {
+            question.choices.push({id: crypto.randomUUID(), label: ''})
+        },
+        removeChoice(question, id) {
+            question.choices = question.choices.filter((obj) => obj.id !== id)
+        },
+        addLogic(question) {
+            question.logic.push({})
+        },
+        removeLogic(question, idx) {
+            question.logic.splice(idx, 1)
+        },
+        selectorData(resource, resourceName, attr, options) {
+            return ({
+                options: options,
+                init() {
+                    Alpine.bind(this.$el, { 'x-model': `${resourceName}.${attr}` })
+                    const tmp = this.$el._x_model.get()
+                    this.$el._x_model.set(null)
+                    this.$el._x_model.set(tmp)
+                }
+            })
+        }
+    }))
 
     Alpine.start()
 </script>
