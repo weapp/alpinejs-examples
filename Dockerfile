@@ -8,9 +8,9 @@ COPY ./ ./
 RUN bun install && \
     bun run build
 
-FROM nginx:latest AS final
+FROM nginxinc/nginx-unprivileged:${NGINX_VERSION} AS final
 
-COPY /nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /home/bun/app/dist/ /usr/share/nginx/html
+COPY --chown=nginx:nginx /nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build --chown=nginx:nginx /home/bun/app/dist/ /usr/share/nginx/html
 
 EXPOSE 3000
